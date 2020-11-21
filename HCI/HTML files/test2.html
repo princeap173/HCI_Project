@@ -1,0 +1,98 @@
+<html>
+<head>
+<title>Test Page 2</title>
+<style>
+div.a {
+	
+    background: lightblue;
+    border-radius: 50%;
+    width: 75px;
+    height: 75px;
+    text-align: center;
+    line-height: 75px;
+
+}
+
+div.a:hover {
+	
+    background: yellow;
+    border-radius: 50%;
+    width: 75px;
+    height: 75px;
+    text-align: center;
+    line-height: 75px;
+    transform:scale(2.0);
+
+}
+
+div.hid {
+	display: none;
+}
+
+div.hid:hover{
+	display:block;
+}
+
+
+</style>
+<script
+  src="https://code.jquery.com/jquery-3.5.1.js"
+  integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc="
+  crossorigin="anonymous"></script>
+
+  <script>
+
+  	var xhr=new XMLHttpRequest();
+  	var str=window.location;
+  	str=str.substring(str.indexOf("test2.html/")+11);
+  	disp=document.getElementById("disp");
+  	function getele()
+  	{
+  		main=document.getElementById("main");
+  		xhr.open("GET",""+str) //link
+  		xhr.onreadystatechange=setval;
+  		xhr.responseType="json";
+  		xhr.send();
+  	}
+
+  	function setval()
+  	{
+  		if(1 | xhr.readyState==4)
+  		{
+  			var obj={company:"abc"}
+  			for(i in obj)
+  			{
+  				var div1=document.createElement("div");
+  				div1.innerText=i;
+  				div1.setAttribute("val",obj[i]);
+  				//div2.setAttribute("class","hid");
+  				div1.setAttribute("class","a");
+  				div1.addEventListener("mouseenter",function(event){
+  					console.log(disp);
+  					disp.innerText=this.getAttribute("val");
+  					console.log(this.getAttribute("val"));
+  				})
+  				div1.addEventListener("mouseleave",function(event){
+  					disp.innerText="";
+  				})
+  				main.appendChild(div1);
+
+  			}
+  		}
+  	}
+
+  </script>
+</head>
+<body onload="setval()">
+<div>	
+<div style="float:left" id="main"></div>
+<br/><br/>
+
+<div id="disp" style="margin-right:15%;display:block;float:right">
+	Hello World
+</div>
+</div>
+</body>
+
+
+</html>

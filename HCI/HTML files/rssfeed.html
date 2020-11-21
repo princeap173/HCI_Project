@@ -1,0 +1,186 @@
+<html>
+    <style>
+
+    li
+    {
+        margin-bottom: 35px;
+        line-height:   35px;
+        height: 70px;
+    }
+
+
+    a
+    {
+        color:white;
+        font-size:24px;    }
+
+    div
+    {
+        color:white;
+    }
+
+
+
+    </style>
+    <head>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+        <script>
+
+
+            msg=new window.SpeechSynthesisUtterance();
+            color=["red","blue","green"]
+
+
+            function speak(event)
+            {
+                msg.text=event.currentTarget.param2;
+                window.speechSynthesis.speak(msg);
+            }
+
+
+            function speak2(event)
+            {
+                console.log("In speak2 event");
+                msg.text=event.currentTarget.getElementsByTagName("a")[0].innerText;
+                window.speechSynthesis.speak(msg);
+            }
+
+            function add(a,b,c)
+            {
+                c[b].addEventListener("click",speak);
+                c[b].setAttribute("style","background-color:"+color[b%3]+";color:white");
+                console.log("Added event 1");
+            }
+
+            function add2(a,b,c)
+            {
+
+                c[b].addEventListener("click",speak2);
+                console.log("Added event 2");
+            }
+
+            function speakStart(event)
+            {
+                var eles=document.getElementsByTagName("li");
+                Array.from(eles).forEach(add);
+                Array.from(eles).forEach(add2);
+                
+            }
+
+            function retstr(val)
+            {
+                var start=val.indexOf("<link>");
+                var end=val.indexOf("<guid>");
+                start=start+6;
+                console.log("Printing the link");
+                console.log(val.substring(start,end));
+                return val.substring(start,end);
+            }
+
+	 
+            var obj={
+                xhr:new XMLHttpRequest(),
+                article:0,
+                getdata:function()
+                {
+                    val=window.location.href.indexOf('#');
+                    val=window.location.href.substr(val+1);
+                    console.log(val);
+                    val2=val.indexOf('#');
+                    val3=val2;
+                    val2=val.substr(val2+1);
+                    val=val.substr(0,val3);
+                    console.log(val);
+                    console.log(val2);
+                    obj.xhr.open("GET","test_php.php?val="+3+"&val1="+val+"&val2="+val2,"true");
+                    obj.xhr.onloadend=this.dispval;
+                    obj.xhr.responseType="json";
+                    obj.xhr.send();
+                },
+                dispval:function()
+                {
+
+                    obj.article=obj.article+1;
+                    var ul=document.getElementById("list");
+                    var root=obj.xhr.response;
+                    console.log(obj.xhr);
+                    console.log(root);
+                    //root=root.getElementsByTagName("channel");
+                    //root=root[0];
+		    //var ctitle=root.getElementsByTagName("title");
+		    //ctitle=ctitle[0];
+		    //var	clink=root.getElementsByTagName("link");
+		    //clink=clink[0];
+		    //var canch=document.createElement("a");
+		    //canch.innerHTML=ctitle.innerHTML;
+		    //console.log(clink.nextSibling.nodeValue);
+		    //canch.href=clink.nextSibling.nodeValue;
+		    //console.log(clink);
+		    //console.log(clink.innerHTML);
+		   // document.getElementById("header").appendChild(canch);
+                   // console.log(root.innerHTML);
+                    //var ttl=root.getElementsByTagName("ttl");
+                    //console.log(ttl)
+                    //if(ttl[0])    
+                      //  var ttl=ttl[0].innerText;
+                    //else
+                      //  var ttl=60;
+                    //console.log(ttl*1000);
+                    //var li=root.getElementsByTagName("item");
+                    for(i=0;i<root.length;i=i+1)
+                    {
+                        var val=0;
+                        var node=document.createElement("li");
+                        var a=document.createElement("a");
+                        var ele=document.createElement("div");
+                        console.log(i);
+                        /*var text= root[i].title;
+                        console.log(text)
+                        if(text.length<200)
+                        {    ele.innerHTML=text;}
+                        else
+                        {
+                            ele.innerHTML=text.substring(0,200);
+                            var extra=text.substring(200);
+                            var span=document.createElement("span");
+                            span.innerHTML="<a href='#'> more....</a>";
+                            span.myparam=extra;
+                            span.addEventListener("click",obj.showMore);
+                            ele.appendChild(span);
+                            val=1;
+                        }*/
+                        a.innerHTML=root[i].title;
+                        //console.log(li[i]);
+                        //a.href=retstr(li[i].innerHTML);
+                        //console.log(li[i].getElementsByTagName("link")[0].innerHTML)
+                        node.appendChild(a);
+                        node.appendChild(ele);
+                        node.setAttribute("class","list-group-item");
+                        node.param2=i;
+                        console.log(node.param2);
+                        //node.addEventListener("load",speakStart());
+                        ul.appendChild(node);
+                        console.log("Printing the node");
+                        console.log("-----------------------");
+                        console.log(node);
+                        console.log("-----------------------");
+
+                    }
+                    speakStart();
+                   setInterval(obj.getdata,ttl*1000);
+                
+                },
+                showMore:function(event)
+                {
+                    event.currentTarget.innerHTML=event.currentTarget.myparam;
+                }
+            }
+        </script>
+        
+    </head>
+    <h1 id="header"></h1>
+    <body onload="obj.getdata()" style="text-align: center;">
+        <ul type="none" id="list" class="list-group"></ul>
+    </body>
+
+</html>

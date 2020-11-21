@@ -1,0 +1,123 @@
+<html>
+	<head>
+		<title>Design for website navigation for the visually impaired</title>
+		<script>
+			var msg=new window.SpeechSynthesisUtterance();
+			window.speechSynthesisUtteranceInstance.rate = 1.5;
+			function speak(msg){
+				window.speechSynthesis.speak(msg);
+			}
+
+			function body_load()
+			{
+				msg.text="Welcome to our website!";
+				//speak(msg);
+				getData();
+			}
+
+			function setMsg(text)
+			{
+				msg.text=text;
+				speak(msg);
+			}
+
+
+			function getData()
+			{
+				xhr = new XMLHttpRequest();
+                val=window.location.href.indexOf('#');
+                val=window.location.href.substr(val+1);
+                val2=val;
+                console.log(val);
+                document.getElementById("name").innerText=decodeURI(val);
+				xhr.open("GET","test_php.php?val=2&pap_cat="+val,"true");
+				xhr.onloadend=dispData;
+				xhr.responseType="json";
+				xhr.send();
+			}
+
+			function dispData()
+			{
+				var arr=xhr.response;
+
+				//<a href="rssfeed.html#1"><div class="square red" onmouseenter="setMsg('India')" ><span>India</span></div></a>
+				var con=document.getElementsByClassName("content")[0];
+				//console.log(con);
+				val=0
+				classArr=["square red","square green","square blue"]
+				//arr=["Health","India","Sports"]
+				arr.forEach(function(el){
+					var a = document.createElement("a");
+					var div = document.createElement("div");
+					var span= document.createElement("span");
+					span.innerText=el;
+					console.log(el);
+					div.setAttribute("onmouseenter","setMsg(' "+el+" ')");
+					div.setAttribute("class"," ' "+classArr[val%3]+ " ' ");
+					a.setAttribute("href","rssfeed.html#"+val2+"#"+el);
+					div.appendChild(span);
+					a.appendChild(div);
+					console.log(a);
+					con.appendChild(a);
+					val+=1
+				});
+			}
+		</script>
+		<style type="text/css">
+			.square
+			{
+				border-radius: 15%;
+				float:left;
+				width:25%;
+				height: 50px%;
+				line-height: 150px;
+				color:white;
+				font-size: 60px;
+				font-style:Arial;
+				text-align: center;
+				margin-left: 5%;
+				margin-top: 5%;
+			}
+
+			.red
+			{
+				background-color: red;
+			}
+
+
+			.green
+			{
+				background-color: green;
+			}
+
+			.blue
+			{
+				background-color: blue;
+			}
+
+			.square:hover
+			{
+				border-radius: 15%;
+				float:left;
+				width:25%;
+				height: 50px%;
+				line-height: 150px;
+				background-color: yellow;
+				text-align: center;
+				margin-left: 5%;
+				margin-top: 5%;
+			}
+		</style>
+	</head>
+	<body onload=body_load()>
+
+		<div>
+			<h1 id="name" style="font-size:80px;margin-left:25%"></h1>
+			<div class="content">
+				<!--<a href="rssfeed.html#1"><div class="square red" onmouseenter="setMsg('India')" ><span>India</span></div></a>
+				<a href="rssfeed.html#2"><div class="square green" onmouseenter="setMsg('Sports')"><span>Sports</span></div></a>
+				<a href="rssfeed.html#3"><div class="square blue" onmouseenter="setMsg('Health')"><span>Health</span></div></a> -->
+			</div>
+		</div>	
+	</body>
+</html>
